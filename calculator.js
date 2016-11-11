@@ -1,14 +1,5 @@
 var baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
-
-function addressInfo(data) {
-    var result = {
-      lat: (data.results[0].geometry['location'].lat).toFixed(3),
-      lng: (data.results[0].geometry['location'].lng).toFixed(3),
-      name: data.results[0].formatted_address,
-    };
-    result.point = calculateCoordinates(result.lat, result.lng);
-    return result;
-}
+var EARTH_RADIUS = 6371;
 
 function getLatAndLng(address1, address2, callback) {
     $.getJSON(baseUrl + address1.val(), function(data) {
@@ -22,15 +13,24 @@ function getLatAndLng(address1, address2, callback) {
     });
 }
 
+function addressInfo(data) {
+    var result = {
+      lat: data.results[0].geometry.location.lat,
+      lng: data.results[0].geometry.location.lng,
+      name: data.results[0].formatted_address,
+    };
+    result.point = calculateCoordinates(result.lat, result.lng);
+    return result;
+}
  
 function showResults(info1, info2, physDistance, surfDistance) {
     printInfo(info1.name, info1.lat, info1.lng, info1.point);
     printInfo(info2.name, info2.lat, info2.lng, info2.point);
     $('#result').append(
         '<h3 style="color: red">Physical Distance: ' +
-        physDistance + ' km</h3>' + '<hr>' +
+        physDistance.toFixed(5) + ' km</h3>' + '<hr>' +
         '<h3 style="color: red">Distance on Surface: ' +
-        surfDistance + ' km</h3>'
+        surfDistance.toFixed(5) + ' km</h3>'
     );
 }
 
@@ -38,31 +38,28 @@ function printInfo(addressName, lat, lng, point) {
     var result = $('#result');
     result.append(
         '<h3>' + addressName.toUpperCase() + ': ' + '</h3>' +
-        '<h4>Latitude: ' + lat + '</h4>' +
-        '<h4>Longitude: ' + lng + '<h4>' +
+        '<h4>Latitude: ' + lat.toFixed(2) + '</h4>' +
+        '<h4>Longitude: ' + lng.toFixed(2) + '<h4>' +
         '<h4>Coordinates: ' + '</h4>' +
-        '<h4>X: ' + point.X + '</h4>' +
-        '<h4>Y: ' + point.Y + '</h4>' +
-        '<h4>Z: ' + point.Z + '</h4>'+ '<hr>'
+        '<h4>X: ' + point.X.toFixed(3) + '</h4>' +
+        '<h4>Y: ' + point.Y.toFixed(3) + '</h4>' +
+        '<h4>Z: ' + point.Z.toFixed(3) + '</h4>'+ '<hr>'
     );
 }
 
 function calculateCoordinates(lat, lng) {
-    var R = 6371;
+    var R = EARTH_RADIUS;
     var latAngle = Math.PI / 180 * lat;
     var lngAngle = Math.PI / 180 * lng;
-    var X = (R * Math.cos(latAngle) * Math.sin(lngAngle)).toFixed(3);
-    var Y = (R * Math.sin(latAngle)).toFixed(3);
-    var Z = (R * Math.cos(latAngle) * Math.cos(lngAngle)).toFixed(3);
+    var X = R * Math.cos(latAngle) * Math.sin(lngAngle);
+    var Y = R * Math.sin(latAngle);
+    var Z = R * Math.cos(latAngle) * Math.cos(lngAngle);
     return {"X": X, "Y": Y, "Z": Z};
 }
 
 function calculateDistanceOnSurface(d) {
-    var R = 6371;
-    var sinAlfa = d * Math.sqrt(4 * Math.pow(R, 2) - Math.pow(d, 2)) / (2 * Math.pow(R, 2));
-    var alfa = Math.asin(sinAlfa).toFixed(3);
-    var distance = (alfa * R).toFixed(3);
-    return distance;
+    var R = EARTH_RADIUS;
+    return 2 * R * Math.asin(d / (2 * R));
 }
 
 function calculatePhysicalDistance(point1, point2) {
@@ -72,12 +69,11 @@ function calculatePhysicalDistance(point1, point2) {
     var x2 = point2.X;
     var y2 = point2.Y;
     var z2 = point2.Z;
-    var distance = Math.sqrt(
-            Math.pow((x1 - x2), 2) +
-            Math.pow((y1 - y2), 2) +
-            Math.pow((z1 -z2), 2)
-            ).toFixed(3);
-    return distance;
+    return Math.sqrt(
+        Math.pow((x1 - x2), 2) +
+        Math.pow((y1 - y2), 2) +
+        Math.pow((z1 -z2), 2)
+    );
 }
 
 $(document).ready(function() {
