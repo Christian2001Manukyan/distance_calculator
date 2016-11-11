@@ -1,40 +1,50 @@
-function getLatAndLng(address1, address2) {
-    var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' +
-        address1.val();
-    $.getJSON(url, function(data) {
-        var lat = (data.results[0].geometry['location'].lat).toFixed(3);
-        var lng = (data.results[0].geometry['location'].lng).toFixed(3);
-        var name = data.results[0].formatted_address;
-        var point1 = calculateCoordinates(lat, lng);
-        printInfo(name, lat, lng, point1);
-        url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' +
-            address2.val();
-        $.getJSON(url, function(data) {
-            lat = (data.results[0].geometry['location'].lat).toFixed(3);
-            lng = (data.results[0].geometry['location'].lng).toFixed(3);
-            name = data.results[0].formatted_address;
-            var point2 = calculateCoordinates(lat, lng);
-            var Distance = calculatePhysicalDistance(point1, point2);
-            printInfo(name, lat, lng, point2);
-            $('#result').html($('#result').html() +
-                    '<h3 style="color: red">Physical Distance: ' +
-                    Distance + ' km</h3>' + '<hr>' +
-                    '<h3 style="color: red">Distance on Surface: ' +
-                    calculateDistanceOnSurface(Distance) + ' km</h3>');
+var baseUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
+
+function addressInfo(data) {
+    var result = {
+      lat: (data.results[0].geometry['location'].lat).toFixed(3),
+      lng: (data.results[0].geometry['location'].lng).toFixed(3),
+      name: data.results[0].formatted_address,
+    };
+    result.point = calculateCoordinates(result.lat, result.lng);
+    return result;
+}
+
+function getLatAndLng(address1, address2, callback) {
+    $.getJSON(baseUrl + address1.val(), function(data) {
+        var info1 = addressInfo(data);
+        $.getJSON(baseUrl + address2.val(), function(data) {
+            var info2 = addressInfo(data);
+            var physDistance = calculatePhysicalDistance(info1.point, info2.point);
+            var surfDistance = calculateDistanceOnSurface(physDistance);
+            callback(info1, info2, physDistance, surfDistance);
         });
     });
 }
 
+ 
+function showResults(info1, info2, physDistance, surfDistance) {
+    printInfo(info1.name, info1.lat, info1.lng, info1.point);
+    printInfo(info2.name, info2.lat, info2.lng, info2.point);
+    $('#result').append(
+        '<h3 style="color: red">Physical Distance: ' +
+        physDistance + ' km</h3>' + '<hr>' +
+        '<h3 style="color: red">Distance on Surface: ' +
+        surfDistance + ' km</h3>'
+    );
+}
+
 function printInfo(addressName, lat, lng, point) {
     var result = $('#result');
-    result.html(result.html() +
-    '<h3>' + addressName.toUpperCase() + ': ' + '</h3>' +
-    '<h4>Latitude: ' + lat + '</h4>' +
-    '<h4>Longitude: ' + lng + '<h4>' +
-    '<h4>Coordinates: ' + '</h4>' +
-    '<h4>X: ' + point.X + '</h4>' +
-    '<h4>Y: ' + point.Y + '</h4>' +
-    '<h4>Z: ' + point.Z + '</h4>'+ '<hr>');
+    result.append(
+        '<h3>' + addressName.toUpperCase() + ': ' + '</h3>' +
+        '<h4>Latitude: ' + lat + '</h4>' +
+        '<h4>Longitude: ' + lng + '<h4>' +
+        '<h4>Coordinates: ' + '</h4>' +
+        '<h4>X: ' + point.X + '</h4>' +
+        '<h4>Y: ' + point.Y + '</h4>' +
+        '<h4>Z: ' + point.Z + '</h4>'+ '<hr>'
+    );
 }
 
 function calculateCoordinates(lat, lng) {
@@ -77,7 +87,7 @@ $(document).ready(function() {
     $('#search').click(function() {
         result.slideUp('fast');
         result.html('');
-        getLatAndLng(address1, address2);
+        getLatAndLng(address1, address2, showResults);
         result.slideDown('slow');
     });
 });
