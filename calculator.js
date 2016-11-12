@@ -22,7 +22,7 @@ function addressInfo(data) {
     result.point = calculateCoordinates(result.lat, result.lng);
     return result;
 }
- 
+
 function showResults(info1, info2, physDistance, surfDistance) {
     printInfo(info1.name, info1.lat, info1.lng, info1.point);
     printInfo(info2.name, info2.lat, info2.lng, info2.point);
