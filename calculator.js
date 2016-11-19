@@ -24,27 +24,22 @@ function addressInfo(data) {
 }
 
 function showResults(info1, info2, physDistance, surfDistance) {
-    printInfo(info1.name, info1.lat, info1.lng, info1.point);
-    printInfo(info2.name, info2.lat, info2.lng, info2.point);
-    $('#result').append(
-        '<h3 style="color: red">Physical Distance: ' +
-        physDistance.toFixed(5) + ' km</h3>' + '<hr>' +
-        '<h3 style="color: red">Distance on Surface: ' +
-        surfDistance.toFixed(5) + ' km</h3>'
-    );
+    var location1 = $('#location1');
+    var location2 = $('#location2');
+    var distance = $('#distance');
+    printInfo(location1, info1.name, info1.lat, info1.lng, info1.point);
+    printInfo(location2, info2.name, info2.lat, info2.lng, info2.point);
+    distance.children().first().append(physDistance + ' km');
+    distance.children().eq(1).append(surfDistance + ' km');
 }
 
-function printInfo(addressName, lat, lng, point) {
-    var result = $('#result');
-    result.append(
-        '<h3>' + addressName.toUpperCase() + ': ' + '</h3>' +
-        '<h4>Latitude: ' + lat.toFixed(2) + '</h4>' +
-        '<h4>Longitude: ' + lng.toFixed(2) + '<h4>' +
-        '<h4>Coordinates: ' + '</h4>' +
-        '<h4>X: ' + point.X.toFixed(3) + '</h4>' +
-        '<h4>Y: ' + point.Y.toFixed(3) + '</h4>' +
-        '<h4>Z: ' + point.Z.toFixed(3) + '</h4>'+ '<hr>'
-    );
+function printInfo(loc, addressName, lat, lng, point) {
+    loc.children().first().append(addressName.toUpperCase());
+    loc.children().eq(1).append(lat);
+    loc.children().eq(2).append(lng);
+    loc.children().eq(4).append(point.X);
+    loc.children().eq(5).append(point.Y);
+    loc.children().eq(6).append(point.Z);
 }
 
 function calculateCoordinates(lat, lng) {
@@ -82,7 +77,6 @@ $(document).ready(function() {
     var result = $('#result');
     $('#search').click(function() {
         result.slideUp('fast');
-        result.html('');
         getLatAndLng(address1, address2, showResults);
         result.slideDown('slow');
     });
