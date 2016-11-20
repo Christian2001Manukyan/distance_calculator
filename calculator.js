@@ -29,17 +29,17 @@ function showResults(info1, info2, physDistance, surfDistance) {
     var distance = $('#distance');
     printInfo(location1, info1.name, info1.lat, info1.lng, info1.point);
     printInfo(location2, info2.name, info2.lat, info2.lng, info2.point);
-    distance.children().first().append(physDistance + ' km');
-    distance.children().eq(1).append(surfDistance + ' km');
+    distance.find('strong').filter('.phys-distance').text(physDistance);
+    distance.find('strong').filter('.surf-distance').text(surfDistance);
 }
 
-function printInfo(loc, addressName, lat, lng, point) {
-    loc.children().first().append(addressName.toUpperCase());
-    loc.children().eq(1).append(lat);
-    loc.children().eq(2).append(lng);
-    loc.children().eq(4).append(point.X);
-    loc.children().eq(5).append(point.Y);
-    loc.children().eq(6).append(point.Z);
+function printInfo(location, addressName, lat, lng, point) {
+    location.children().filter('.address').text(addressName.toUpperCase());
+    location.find('strong').filter('.lat').text(lat);
+    location.find('strong').filter('.lng').text(lng);
+    location.find('strong').filter('.X').text(point.X);
+    location.find('strong').filter('.Y').text(point.Y);
+    location.find('strong').filter('.Z').text(point.Z);
 }
 
 function calculateCoordinates(lat, lng) {

@@ -6,7 +6,7 @@
     box-shadow: 1px 1px 2px black;
 }
 #search {
-    width: 380px;
+    width: 95%;
     margin: 5px;
 }
 #address1, #address2 {
@@ -14,10 +14,12 @@
     width: 180px;
     display: inline-block;
 }
-#result {
-    margin: auto;
+#location1, #location2 {
     padding: 5px;
-    width: 380px;
-    border: 1px solid black;
+}
+#distance h3{
+    color: red;
+}
+#result {
     display: none;
 }
