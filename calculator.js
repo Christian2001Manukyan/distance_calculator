@@ -24,22 +24,23 @@ function addressInfo(data) {
 }
 
 function showResults(info1, info2, physDistance, surfDistance) {
-    var location1 = $('#location1');
-    var location2 = $('#location2');
-    var distance = $('#distance');
-    printInfo(location1, info1.name, info1.lat, info1.lng, info1.point);
-    printInfo(location2, info2.name, info2.lat, info2.lng, info2.point);
-    distance.find('strong').filter('.phys-distance').text(physDistance);
-    distance.find('strong').filter('.surf-distance').text(surfDistance);
+    displayLocationInfo($('#location1'), info1.name, info1.lat, info1.lng, info1.point);
+    displayLocationInfo($('#location2'), info2.name, info2.lat, info2.lng, info2.point);
+    displayDistanceInfo($('#distance'), physDistance, surfDistance);
 }
 
-function printInfo(location, addressName, lat, lng, point) {
-    location.children().filter('.address').text(addressName.toUpperCase());
-    location.find('strong').filter('.lat').text(lat);
-    location.find('strong').filter('.lng').text(lng);
-    location.find('strong').filter('.X').text(point.X);
-    location.find('strong').filter('.Y').text(point.Y);
-    location.find('strong').filter('.Z').text(point.Z);
+function displayLocationInfo(location, addressName, lat, lng, point) {
+    location.find('.address').text(addressName.toUpperCase());
+    location.find('.lat').text(lat);
+    location.find('.lng').text(lng);
+    location.find('.X').text(point.X);
+    location.find('.Y').text(point.Y);
+    location.find('.Z').text(point.Z);
+}
+
+function displayDistanceInfo(distance, physDistance, surfDistance) {
+    distance.find('.phys-distance').text(physDistance);
+    distance.find('.surf-distance').text(surfDistance);
 }
 
 function calculateCoordinates(lat, lng) {
