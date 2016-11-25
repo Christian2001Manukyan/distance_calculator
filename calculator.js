@@ -33,9 +33,6 @@ function displayLocationInfo(location, addressName, lat, lng, point) {
     location.find('.address').text(addressName.toUpperCase());
     location.find('.lat').text(lat);
     location.find('.lng').text(lng);
-    location.find('.X').text(point.X);
-    location.find('.Y').text(point.Y);
-    location.find('.Z').text(point.Z);
 }
 
 function displayDistanceInfo(distance, physDistance, surfDistance) {
