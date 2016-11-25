@@ -1,7 +1,7 @@
 #my-div {
     margin: 10px;
     padding: 10px;
-    width: 35%;
+    width: 400px;
     border: 1px solid black;
     box-shadow: 1px 1px 2px black;
 }
@@ -11,7 +11,7 @@
 }
 #address1, #address2 {
     margin: 6px;
-    width: 45%;
+    width: 170px;
     display: inline-block;
 }
 #location1, #location2 {
